@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+require "pathname"
+require "fileutils"
+include FileUtils
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path("../../", __FILE__)
+
+def system!(*args)
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+chdir APP_ROOT do
+  # This script is a starting point to setup your application.
+  # Add necessary setup steps to this file.
+
+  runs = 0
+  runs_path = "appdev/runs"
+  if !File.exist?(runs_path)
+    system! "mkdir appdev"
+    system! "echo '0' > appdev/runs"
+    runs = open(runs_path).read.to_i
+  else
+    runs = open(runs_path).read.to_i
+    cmd = "echo '#{runs + 1}' > appdev/runs"
+    system! cmd
+    runs = open(runs_path).read.to_i
+  end
+
+  puts "== Installing dependencies =="
+  system! "bundle install"
+
+  # Install JavaScript dependencies if using Yarn
+  # system("bin/yarn")
+
+  # puts "\n== Copying sample files =="
+  # unless File.exist?("config/database.yml")
+  #   cp "config/database.yml.sample", "config/database.yml"
+  # end
+
+  puts "\n== Preparing database =="
+  system! "rails db:drop"
+  system! "rails db:create"
+  system! "rails db:migrate"
+  system! "rails db:seed"
+  # system! "bin/rails dev:prime"
+
+  # This script is a starting point to setup your application.
+  # Add necessary setup steps to this file.
+
+
+  puts "\n== Installing web_git dependencies =="
+  system! "npm install diff2html-cli"
+
+  puts "\n== Installing Cloud9 plugins  =="
+  system! "curl --remote-name https://raw.githubusercontent.com/firstdraft/cloud9-setup/master/cloud9_plugins.sh"
+  system! "sh cloud9_plugins.sh"
+
+  if runs.zero?
+  puts "\n== MANUAL SETUP =="
+  puts <<-HEREDOC
+To enable autoformatting for .rb and .html.erb files:
+
+ 1. In the Cloud9 menu, select Open Your Init Script and add the following code:
+
+        services.pluginManager.loadPackage([
+          "~/.c9/plugins/formatruby/package.json",
+          "~/.c9/plugins/formathtmlerb/package.json",
+        ]);
+
+    (if it's not already there).
+
+ 2. In the Cloud9 menu, select Preferences > Plugin Explorer and check "formathtmlerb" and
+    "formatruby". You might need to do this each time you open the workspace.
+
+You should then be able to autoindent with Cmd-Shift-B (Mac) or Ctrl-Shift-B
+(Windows).
+HEREDOC
+
+else
+    puts <<-SECOND_RUN
+ \n
+Hi! It looks like you've run bin/setup more than once for this project. That's unusual; are you sure that's what you want to do?
+
+* Maybe you're trying to reset the dummy data in your development database;
+  if so, try
+
+  rails dev:prime
+
+  instead.
+
+* Maybe you're trying to enable autoformatting for .rb and .html.erb files. If so,
+
+  1. In the Cloud9 menu, select "Open Your Init Script" and add the following code:
+
+    services.pluginManager.loadPackage([
+    "/.c9/plugins/formatruby/package.json",
+    "/.c9/plugins/formathtmlerb/package.json",
+    ]);
+
+    (if it's not already there).
+
+  2. In the Cloud9 menu, select "Preferences > Plugin Explorer" and check "formathtmlerb" and "formatruby".
+  \n
+    SECOND_RUN
+  end
+
+end

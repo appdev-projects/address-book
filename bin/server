@@ -1,0 +1,4 @@
+#!/bin/bash
+
+kill -9 $(lsof -i tcp:8080 -t) >/dev/null 2>/dev/null
+rails server -b $IP -p $PORT

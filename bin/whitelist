@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+require 'pathname'
+require 'fileutils'
+require 'yaml'
+include FileUtils
+
+ip_address =  ARGV[0]
+path = Pathname.new File.expand_path('../../whitelist.yml', __FILE__)
+whitelisted_ips = if File.exist?(path)
+                    YAML.load_file(path)
+                  else
+                    []
+                  end
+
+whitelisted_ips << ip_address
+whitelisted_ips = whitelisted_ips.uniq.compact
+
+File.open(path, 'w') {|f| f.write whitelisted_ips.to_yaml }
+
+puts "Stopping Rails server. Please restart it."
+`kill -9 $(lsof -i tcp:8080 -t) >/dev/null 2>/dev/null`

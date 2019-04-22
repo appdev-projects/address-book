@@ -1,0 +1,11 @@
+machine:
+  timezone:
+    America/New_York
+  ruby:
+    version:
+      2.3.1
+test:
+  override:
+    - RAILS_ENV=test bundle exec rspec --order default --format p --format JsonOutputFormatter --out $CIRCLE_ARTIFACTS/output/rspec_output.json
+  post:
+    - bin/rails grade_runner:runner
