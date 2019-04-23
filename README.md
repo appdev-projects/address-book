@@ -45,3 +45,21 @@ end
 ```
 
 That's it! Now fire up a `rails console` to pull up an interactive REPL, and use [the ApplicationRecord Chapter](https://chapters.firstdraft.com/chapters/770) as a reference to experiment.
+
+## Shortcuts
+
+The ultimate shortcuts for generating our migrations _and_ model files:
+
+```bash
+rails generate draft:model contact first_name:string last_name:string date_of_birth:date
+```
+
+```bash
+rails g draft:model company name:string industry:string structure:string last_year_revenue:integer founded_on:date
+```
+
+and then don't forget to
+
+```bash
+rails db:migrate
+```
