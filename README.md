@@ -65,6 +65,16 @@ This allows us to keep multiple tasks with the same name from conflicting. (It i
 
 Anyway, try running `rails dummy:random_contacts` now. Then, in `rails console`, do `Contact.count`. Experiment with some [READ methods](https://chapters.firstdraft.com/chapters/770#read).
 
+### dummy:reset
+
+Let's get us all on the same page with the exact same data; run the following:
+
+```
+rails dummy:reset
+```
+
+This will create the same dataset for all of us, rather than random data.
+
 ## ActiveAdmin
 
 In all of our Rails apps in this course, we'll include a nice third-party open-source library called [ActiveAdmin](https://activeadmin.info/). ActiveAdmin provides a decent visual overview of our database tables without any configuration required _at all_. (ActiveAdmin is also extremely powerful — it's a whole mini-framework unto itself — and will allow you to build very flexible admin dashboards if you invest some energy learning its methods. But we will just stick to the defaults for now.)
